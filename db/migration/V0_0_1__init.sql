@@ -1,0 +1,29 @@
+CREATE SEQUENCE IF NOT EXISTS hibernate_sequence START 1;
+
+
+CREATE TABLE IF NOT EXISTS to_do_list
+(
+    id    BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_todolist PRIMARY KEY (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS task
+(
+    id            BIGINT NOT NULL,
+    title         VARCHAR(255) NOT NULL,
+    description   VARCHAR(255),
+    parent_id     BIGINT,
+    to_do_list_id BIGINT NOT NULL,
+    CONSTRAINT pk_task PRIMARY KEY (id)
+);
+
+ALTER TABLE task DROP CONSTRAINT IF EXISTS FK_TASK_ON_PARENT;
+ALTER TABLE task
+    ADD CONSTRAINT FK_TASK_ON_PARENT FOREIGN KEY (parent_id) REFERENCES task (id);
+
+
+ALTER TABLE task DROP CONSTRAINT IF EXISTS FK_TASK_ON_TODOLIST;
+ALTER TABLE task
+    ADD CONSTRAINT FK_TASK_ON_TODOLIST FOREIGN KEY (to_do_list_id) REFERENCES to_do_list (id);
